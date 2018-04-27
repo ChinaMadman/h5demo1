@@ -1,0 +1,184 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="apple-touch-icon" href="icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+        <video id="videott" width="220" height="200" controls="controls" >
+            <source src="1111.mp4" type="video/mp4"/>
+        </video>
+        <progress id="progessPG" value="0" max="100"></progress>
+        <button onclick="goVi()">启动</button>
+        <button onclick="stopVi()">暂停</button>
+        <button onclick="gogoVi()">快进</button>
+        <button onclick="soundD()">调大</button>
+        <button onclick="soundX()">调小</button>
+
+        <video id="video1" width="220" height="200" controls="controls" >
+            <source src="1111.mp4" type="video/mp4"/>
+        </video>
+        <button onclick="playPause(this)" id="p">播放</button>
+        <progress value="0" max="100" id="proDownFile"></progress>
+        <button onclick="kj()">快进</button>
+        <button onclick="kt()">快退</button>
+        <button onclick="shoutup(this)">静音</button>
+        <button onclick="fast()">加速播放</button>
+        <button onclick="slow()">减速播放</button>
+        <button onclick="sound()">声音调高</button>
+        <button onclick="sd()">声音调低</button>
+        <div>
+            <svg height="180">
+                <polygon points="100,10 40,180 190,60 10,60 160,180" fill="red" stroke="blue"
+                         fill-rule="evenodd" stroke-width="2"></polygon>
+            </svg>
+        </div>
+
+
+
+        <script src="js/vendor/modernizr-3.5.0.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <script>
+            window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+            ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
+            var mAudio = document.getElementById("audiott");
+            var mVideo = document.getElementById("videott");
+            var mprogess = document.getElementById("progessPG");
+            var intValue = 0;
+            var intTime;
+            var myvideo = document.getElementById("video1");
+            var pay = 1 //控制播放速度
+            var objPro=document.getElementById('proDownFile');
+
+            //快进
+            function kj(){
+                myvideo.currentTime+=2;
+                intValue+=20;
+                objPro.value=intValue
+                if(intValue>objPro.max){
+                    clearInterval(intTimer);
+                    objPro.value=0;
+                    intValue=0;
+                }
+            }
+            //快退
+            function kt(){
+                myvideo.currentTime-=2;
+                intValue-=20;
+                objPro.value=intValue
+                if(intValue<=0){
+                    objPro.value=0;
+                    intValue=0;
+                }
+            }
+            //静音
+            function shoutup(sup){
+                if(myvideo.muted){
+                    sup.innerHtml="启动"
+                    myvideo.muted=false;
+                }else{
+                    sup.innerHtml="静音"
+                    myvideo.muted=true;
+                }
+            }
+            //加速播放
+            function fast(){
+                myvideo.playbackRate=2;
+                pay = 2;
+
+            }
+            //减速播放
+            function slow(){
+                myvideo.playbackRate=1/2;
+                pay =3;
+            }
+            //声音调高
+            function sound(){
+                myvideo.volume+=0.2;
+            }
+
+            //声音调低
+            function sd(){
+                myvideo.volume-=0.2;
+            }
+            //播放
+            function Interval_handler(){
+                if(pay ==2)
+                    intValue+=2;
+                else if (pay ==3)
+                    intValue+=0.5;
+                else
+                    intValue++;
+                objPro.value=intValue;
+                if(intValue>=objPro.max){
+                    document.getElementById('p').innerHTML="播放";
+                    clearInterval(intTimer);
+                    objPro.value=0;
+                    intValue=0;
+                }
+            }
+            //播放暂停
+            function playPause(obj){
+                if(myvideo.paused){
+                    intTimer=setInterval(Interval_handler,100);
+                    obj.innerHTML="暂停";
+                    myvideo.play();
+                }else{
+                    clearInterval(intTimer);
+                    obj.innerHTML="播放";
+                    myvideo.pause();
+                };
+            };
+/////////////////////////////////////////////////////////////////////////////////////////
+            function goVi() {
+                mVideo.play();
+                intTime=setInterval(interval_test,100);
+            }
+            function interval_test() {
+                // mVideo.currentTime +=2;
+                // intValue++;
+                // alert(intValue)
+                // mprogess.value = intValue;
+                // if(mprogess.value=mprogess.max){
+                //     mprogess.value = 0;
+                //     intValue = 0;
+                //     clearInterval(intTime);
+                // }
+                mprogess.max=mVideo.duration;
+                mprogess.value=mVideo.currentTime;
+            }
+            function stopVi() {
+                mVideo.pause();
+            }
+            function gogoVi() {// -- 快进
+                // mVideo.playbackRate = mVideo.playbackRate*2;  //快速播放
+                mVideo.currentTime+=2;
+
+            }
+            function soundD() { //大声
+
+            }
+            function soundX() {
+
+            }
+        </script>
+        <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+    </body>
+</html>
